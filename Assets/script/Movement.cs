@@ -2,11 +2,18 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
-    public float speed = 16f;
+    public float speed = 20;
     public float jumpForce = 30f;
     public bool isGrounded = true;
     public bool canDoubleJump = false;
     [SerializeField] Rigidbody2D rb;
+
+    private PlayerVergant playerAudio;
+
+    void Start()
+    {
+        playerAudio = GetComponent<PlayerVergant>();
+    }
 
     void Update()
     {
@@ -25,11 +32,23 @@ public class Movement : MonoBehaviour
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
                 isGrounded = false;
                 canDoubleJump = true;
+
+                if (playerAudio != null)
+                {
+                    playerAudio.isGrounded = false;
+                    playerAudio.PlayJumpSound();
+                }
             }
             else if (canDoubleJump)
             {
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
                 canDoubleJump = false;
+
+                if (playerAudio != null)
+                {
+                    playerAudio.isGrounded = false;
+                    playerAudio.PlayJumpSound();
+                }
             }
         }
     }
@@ -40,14 +59,24 @@ public class Movement : MonoBehaviour
         {
             isGrounded = true;
             canDoubleJump = false;
+
+            if (playerAudio != null)
+            {
+                playerAudio.isGrounded = true;
+            }
         }
     }
 
     void OnCollisionExit2D(Collision2D collision)
     {
-        if(collision.gameObject.CompareTag("Ground"))
+        if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = false;
+
+            if (playerAudio != null)
+            {
+                playerAudio.isGrounded = false;
+            }
         }
     }
 }
