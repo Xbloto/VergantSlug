@@ -200,4 +200,10 @@ public class PlayerVergant : MonoBehaviour
         SceneManager.LoadScene("Scene1");
         Time.timeScale = 1.0f;
     }
+
+    public void MainMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
+        Time.timeScale = 1.0f;
+    }
 }

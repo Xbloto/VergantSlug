@@ -2,54 +2,61 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
-    public float speed = 20;
-    public float jumpForce = 30f;
+    public float speed = 20f;
+    public float jumpForce = 34f;
     public bool isGrounded = true;
     public bool canDoubleJump = false;
-    [SerializeField] Rigidbody2D rb;
+    
+    public Animator animator;
+    [SerializeField] private Rigidbody2D rb;
 
     private PlayerVergant playerAudio;
 
     void Start()
     {
+        if (animator == null) animator = GetComponent<Animator>();
+        if (rb == null) rb = GetComponent<Rigidbody2D>();
         playerAudio = GetComponent<PlayerVergant>();
     }
 
     void Update()
     {
-        float move = Input.GetAxis("Horizontal");
-        transform.Translate(move * speed * Time.deltaTime, 0, 0);
+        float moveInput = Input.GetAxisRaw("Horizontal");
 
-        if (move > 0)
+        rb.linearVelocity = new Vector2(moveInput * speed, rb.linearVelocity.y);
+
+        animator.SetFloat("speed", Mathf.Abs(moveInput));
+
+        if (moveInput > 0)
             transform.localScale = new Vector3(1, 1, 1);
-        else if (move < 0)
+        else if (moveInput < 0)
             transform.localScale = new Vector3(-1, 1, 1);
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if (isGrounded)
             {
-                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
-                isGrounded = false;
+                Jump();
                 canDoubleJump = true;
-
-                if (playerAudio != null)
-                {
-                    playerAudio.isGrounded = false;
-                    playerAudio.PlayJumpSound();
-                }
             }
             else if (canDoubleJump)
             {
-                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+                Jump();
                 canDoubleJump = false;
-
-                if (playerAudio != null)
-                {
-                    playerAudio.isGrounded = false;
-                    playerAudio.PlayJumpSound();
-                }
             }
+        }
+    }
+
+    private void Jump()
+    {
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+        isGrounded = false;
+        animator.SetBool("IsJumping", true);
+
+        if (playerAudio != null)
+        {
+            playerAudio.isGrounded = false;
+            playerAudio.PlayJumpSound();
         }
     }
 
@@ -58,24 +65,12 @@ public class Movement : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
+            animator.SetBool("IsJumping", false);
             canDoubleJump = false;
 
             if (playerAudio != null)
             {
                 playerAudio.isGrounded = true;
-            }
-        }
-    }
-
-    void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            isGrounded = false;
-
-            if (playerAudio != null)
-            {
-                playerAudio.isGrounded = false;
             }
         }
     }

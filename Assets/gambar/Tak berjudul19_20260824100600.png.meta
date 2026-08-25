@@ -106,12 +106,12 @@ TextureImporter:
       name: Tak berjudul19_20260824100600_0
       rect:
         serializedVersion: 2
-        x: 188
+        x: 172
         y: 53
-        width: 397
+        width: 541
         height: 672
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -124,33 +124,11 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: Tak berjudul19_20260824100600_1
-      rect:
-        serializedVersion: 2
-        x: 318
-        y: 199
-        width: 393
-        height: 301
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: ab965a45c1ab2e6e0800000000000000
-      internalID: -1809679469407540806
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5b4d2dbab485ece4e93ae3d697bdcb00
     internalID: 0
     vertices: []
     indices: 
