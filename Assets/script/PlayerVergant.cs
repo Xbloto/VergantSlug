@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections; 
+using UnityEngine.SceneManagement;
+
 
 public class PlayerVergant : MonoBehaviour
 {
@@ -25,6 +27,8 @@ public class PlayerVergant : MonoBehaviour
 
     [HideInInspector]
     public bool isGrounded = true;
+    
+    public GameObject DeadScreen;
 
     private Vector3 originalUIPosition;
     private Quaternion originalUIRotation;
@@ -186,6 +190,14 @@ public class PlayerVergant : MonoBehaviour
 
     void Die()
     {
+        DeadScreen.SetActive(true);
+        Time.timeScale = 0f;
         Debug.Log("Player Mati!");
+    }
+
+    public void Respawn()
+    {
+        SceneManager.LoadScene("Scene1");
+        Time.timeScale = 1.0f;
     }
 }
