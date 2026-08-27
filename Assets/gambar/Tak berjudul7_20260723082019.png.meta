@@ -116,12 +116,12 @@ TextureImporter:
       name: Tak berjudul7_20260723082019_0
       rect:
         serializedVersion: 2
-        x: 38
-        y: 43
-        width: 725
-        height: 617
+        x: 0
+        y: 0
+        width: 768
+        height: 768
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -138,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 40994e583fbd45d43a500a1a69080441
     internalID: 0
     vertices: []
     indices: 

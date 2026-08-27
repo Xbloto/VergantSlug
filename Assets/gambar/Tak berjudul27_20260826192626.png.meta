@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: d413cbc72d8863548bab42356a6ba1cf
+guid: 890bc844a713434449c12fb499b42551
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3030029057091749066
-    second: Tak berjudul7_20260723081535_0
+      213: -3502051853719217794
+    second: Tak berjudul27_20260826192626_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -96,40 +96,27 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: Android
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Tak berjudul7_20260723081535_0
+      name: Tak berjudul27_20260826192626_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
-        width: 768
-        height: 768
+        y: 1716
+        width: 1131
+        height: 332
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ac4c017af53dc0a20800000000000000
-      internalID: 3030029057091749066
+      spriteID: e79511ac466366fc0800000000000000
+      internalID: -3502051853719217794
       vertices: []
       indices: 
       edges: []
@@ -138,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: acd965fcd2fc5974cb626741083dbcc8
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -148,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Tak berjudul7_20260723081535_0: 3030029057091749066
+      Tak berjudul27_20260826192626_0: -3502051853719217794
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

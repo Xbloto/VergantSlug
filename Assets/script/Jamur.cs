@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections; 
 
-public class MoveEnemy : MonoBehaviour
+public class Jamur : MonoBehaviour
 {
     [Header("Pengaturan Gerak & Patroli")]
     public float speed = 2f;           
@@ -10,8 +10,16 @@ public class MoveEnemy : MonoBehaviour
     [Header("Pengaturan Deteksi & Kejar Player")]
     public float chaseSpeed = 3.5f;     
     public float detectionRange = 5f;   
-    public float stoppingDistance = 0.8f; 
-    public int contactDamage = 1;
+    public float stoppingDistance = 2f; 
+
+    [Header("Pengaturan Menembak Enemy")]
+    public GameObject bulletPrefab; 
+    public Transform firePoint;     
+    public float fireRate = 1f;
+    public AudioSource audioSource;
+    public AudioClip shootSound;
+    public float minPitch = 0.85f;
+    public float maxPitch = 1.15f;
 
     [Header("Pengaturan Nyawa & Efek")]
     public int maxHealth = 3;          
@@ -25,68 +33,71 @@ public class MoveEnemy : MonoBehaviour
     private int currentHealth;
     private SpriteRenderer spriteRenderer;
     private Color originalColor;
-
+    
     private Transform playerTransform;
+    private float nextFireTime = 0f;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>(); 
-        
         originalColor = spriteRenderer.color; 
         currentHealth = maxHealth;           
-        startX = transform.position.x; 
+        startX = transform.position.x;
 
-        FindPlayer();
+        if (audioSource == null) audioSource = GetComponent<AudioSource>();
+
+        FindPlayer(); // Coba cari player di awal
     }
 
+    // Fungsi khusus buat nyari player terus-terusan kalau hilang
     void FindPlayer()
     {
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null)
         {
             playerTransform = playerObj.transform;
+            Debug.Log("<color=green>Mantap, Jamur berhasil menemukan Player!</color>");
         }
     }
 
     void Update()
     {
+        // KALAU PLAYER BELUM KETEMU, CARI TERUS!
         if (playerTransform == null)
         {
             FindPlayer();
-            PatrolLogic();
-            return;
+            return; // Jangan jalankan kode nembak kalau player belum ada
         }
 
         float distanceToPlayer = Vector2.Distance(transform.position, playerTransform.position);
 
-        if (distanceToPlayer > detectionRange)
+        if (distanceToPlayer <= detectionRange)
         {
-            PatrolLogic();
+            if (Time.time >= nextFireTime)
+            {
+                ShootAtPlayer();
+                nextFireTime = Time.time + fireRate;
+            }
         }
-    }
-
-    void PatrolLogic()
-    {
-        if (transform.position.x > startX + patrolDistance && movingRight)
+        else
         {
-            movingRight = false;
-            Flip();
-        }
-        else if (transform.position.x < startX - patrolDistance && !movingRight)
-        {
-            movingRight = true;
-            Flip();
+            if (transform.position.x > startX + patrolDistance && movingRight)
+            {
+                movingRight = false;
+                Flip();
+            }
+            else if (transform.position.x < startX - patrolDistance && !movingRight)
+            {
+                movingRight = true;
+                Flip();
+            }
         }
     }
 
     void FixedUpdate()
     {
-        if (playerTransform == null)
-        {
-            MoveInDirection(speed);
-            return;
-        }
+        if (playerTransform == null) return; // Stop pergerakan ngejar kalau player ga ada
 
         float distanceToPlayer = Vector2.Distance(transform.position, playerTransform.position);
 
@@ -105,7 +116,8 @@ public class MoveEnemy : MonoBehaviour
 
             if (distanceToPlayer > stoppingDistance)
             {
-                MoveInDirection(chaseSpeed);
+                float directionX = movingRight ? 1f : -1f;
+                rb.linearVelocity = new Vector2(directionX * chaseSpeed, rb.linearVelocity.y);
             }
             else
             {
@@ -114,14 +126,25 @@ public class MoveEnemy : MonoBehaviour
         }
         else
         {
-            MoveInDirection(speed);
+            float directionX = movingRight ? 1f : -1f;
+            rb.linearVelocity = new Vector2(directionX * speed, rb.linearVelocity.y);
         }
     }
 
-    void MoveInDirection(float moveSpeed)
+    void ShootAtPlayer()
     {
-        float directionX = movingRight ? 1f : -1f;
-        rb.linearVelocity = new Vector2(directionX * moveSpeed, rb.linearVelocity.y);
+        if (bulletPrefab == null || firePoint == null) return;
+
+        Vector3 direction = playerTransform.position - firePoint.position;
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+        Instantiate(bulletPrefab, firePoint.position, Quaternion.Euler(0f, 0f, angle));
+        
+        if (audioSource != null && shootSound != null)
+        {
+            audioSource.pitch = Random.Range(minPitch, maxPitch);
+            audioSource.PlayOneShot(shootSound);
+        }
     }
 
     void Flip()
@@ -137,37 +160,13 @@ public class MoveEnemy : MonoBehaviour
         {
             TakeDamage();
         }
-        else if (collision.CompareTag("Player"))
-        {
-            PlayerVergant player = collision.GetComponent<PlayerVergant>();
-            if (player != null)
-            {
-                player.TakeDamage(contactDamage);
-            }
-        }
-    }
-
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            PlayerVergant player = collision.gameObject.GetComponent<PlayerVergant>();
-            if (player != null)
-            {
-                player.TakeDamage(contactDamage);
-            }
-        }
     }
 
     void TakeDamage()
     {
         currentHealth--; 
         StartCoroutine(FlashRed());
-
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
+        if (currentHealth <= 0) Die();
     }
 
     IEnumerator FlashRed()
@@ -180,14 +179,5 @@ public class MoveEnemy : MonoBehaviour
     void Die()
     {
         Destroy(gameObject); 
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, detectionRange);
-
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, stoppingDistance);
     }
 }
